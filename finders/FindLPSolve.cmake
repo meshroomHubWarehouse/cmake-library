@@ -8,6 +8,7 @@ find_path(LPSOLVE_INCLUDE_DIR
                 ${LPSOLVE_DIR}/include
                 /usr/local/include
                 /usr/include
+                /usr/include/lpsolve
                 ${VS_SEARCH_PATH}/lpsolve-5.5.2.11/include
                 ~/sw/lpsolve-5.5.2.11/include
           )
@@ -22,16 +23,16 @@ find_library(LPSOLVE_LIBRARY
                    /usr/lib
             )
 
-get_filename_component(LPSOLVE_LIBRARY_DIR ${LPSOLVE_LIBRARY} DIRECTORY CACHE)
-
 include(FindPackageHandleStandardArgs)
-find_package_handle_standard_args(LPSOLVE DEFAULT_MSG LPSOLVE_INCLUDE_DIR LPSOLVE_LIBRARY LPSOLVE_LIBRARY_DIR)
+find_package_handle_standard_args(LPSolve DEFAULT_MSG LPSOLVE_INCLUDE_DIR LPSOLVE_LIBRARY)
 
 if(LPSOLVE_FOUND AND NOT TARGET lpsolve::lpsolve)
     add_library(lpsolve::lpsolve INTERFACE IMPORTED)
     target_include_directories(lpsolve::lpsolve INTERFACE ${LPSOLVE_INCLUDE_DIR})
     target_link_directories(lpsolve::lpsolve INTERFACE ${LPSOLVE_LIBRARY_DIR})
     target_link_libraries(lpsolve::lpsolve INTERFACE ${LPSOLVE_LIBRARY})
+    target_link_libraries(lpsolve::lpsolve INTERFACE dl) # TODO: fix for windows/mac?
+    target_link_libraries(lpsolve::lpsolve INTERFACE colamd) # TODO: fix for windows/mac?
 endif()
 
 mark_as_advanced(LPSOLVE_INCLUDE_DIR)
